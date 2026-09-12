@@ -280,9 +280,9 @@
   <div class="frame-916">
 
   <div class="card" id="tela-login">
-    <div class="logo">Champion II</div>
+    <div class="logo">Royal Loto</div>
     <h1>Gerador de Licença</h1>
-    <div class="subtitle">Cole a semente da máquina (botão DEFAULT no Bingo_63) para continuar</div>
+    <div class="subtitle">Cole a semente da máquina (botão DEFAULT no Royal Loto) para continuar</div>
     <div class="field">
       <label for="senha">Semente</label>
       <input type="text" id="senha" placeholder="SEMENTE DA MÁQUINA" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;">
@@ -303,7 +303,7 @@
   <!-- TELA 2: GERADOR -->
   <div class="card hidden" id="tela-gerador">
     <div class="topbar">
-      <div class="subtitle">Bingo_63 — Licença</div>
+      <div class="subtitle">Royal Loto — Licença</div>
       <button class="logout" id="btn-sair">Sair</button>
     </div>
     <h1>Gerar código de licença</h1>
@@ -334,13 +334,13 @@
     <div class="error" id="erro-gerador"></div>
 
     <div class="result hidden" id="resultado">
-      <div class="label">Código para digitar no Bingo_63</div>
+      <div class="label">Código para digitar no Royal Loto</div>
       <div class="code" id="codigo-saida"></div>
       <button class="copy-btn" id="btn-copiar">Copiar código</button>
     </div>
 
     <div class="hint">
-      Digite este código de 17 dígitos na tela de registro do jogo (Semente) e confirme com "aceitar".
+      Digite este código de 10 dígitos na tela de registro do jogo (Semente) e confirme com "ACEITAR".
     </div>
   </div>
 
@@ -350,7 +350,7 @@
   <div class="qr-overlay hidden" id="qr-overlay">
     <div class="qr-panel">
       <h1>Ler QR Code</h1>
-      <div class="subtitle">Aponte a câmera para o QR Code exibido no Bingo_63</div>
+      <div class="subtitle">Aponte a câmera para o QR Code exibido no Royal Loto</div>
       <div class="qr-video-wrap">
         <video id="qr-video" autoplay playsinline muted></video>
         <div class="qr-mira"></div>
@@ -512,7 +512,7 @@
       telaGerador.classList.remove("hidden");
       sementeConferida.textContent = semente;
     } else {
-      erroLogin.textContent = "Semente inválida. Cole a semente exibida no Bingo_63.";
+      erroLogin.textContent = "Semente inválida. Cole a semente exibida no Royal Loto.";
     }
   }
 
@@ -694,7 +694,7 @@
       .join("");
   }
 
-  // Port fiel de create_regs(cod, multi) em Bingo_63/scripts/game_state.gd — gera
+  // Port fiel de create_regs(cod, multi) em Royal Loto/scripts/game_state.gd — gera
   // um codigo de licenca amarrado a semente (cod) da maquina, nao generico.
   async function createRegs(cod, multi) {
     const sha = await sha256Hex(cod);
@@ -750,7 +750,8 @@
     const finalInt2 = finalNums.substr(9, 8);
     const meio = finalInt1 < 100000000 ? String(finalInt1 + 100000000) : String(finalInt1);
 
-    return finalInt2.substr(4, 2) + meio + finalInt2.substr(6, 3) + finalInt2.substr(0, 4);
+    const full = finalInt2.substr(4, 2) + meio + finalInt2.substr(6, 3) + finalInt2.substr(0, 4);
+    return full.substr(0, 10); // reduzido de 17 pra 10 digitos - igual ao create_regs() do Royal Loto (game_state.gd)
   }
 
   async function gerarCodigo() {

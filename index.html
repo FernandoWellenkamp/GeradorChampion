@@ -276,6 +276,7 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><path d="M14 14h3v3h-3zM14 20h3M20 14v3M20 20v.01"></path></svg>
       Ler QR Code da máquina
     </button>
+    <div class="hint">Ou pressione <b>Ctrl+V</b> pra colar uma imagem do QR Code (ex: recebida no WhatsApp).</div>
     <div class="error" id="erro-login"></div>
   </div>
 
@@ -582,6 +583,51 @@
 
   btnLerQr.addEventListener("click", abrirLeitorQR);
   btnQrCancelar.addEventListener("click", fecharLeitorQR);
+
+  // ---- Colar imagem do QR Code (Ctrl+V, ex: print recebido no WhatsApp) ----
+  async function processarImagemQR(blob) {
+    erroLogin.textContent = "";
+    if (typeof jsQR !== "function") {
+      erroLogin.textContent = "Leitor de QR Code não carregado.";
+      return;
+    }
+    try {
+      const bitmap = await createImageBitmap(blob);
+      const canvas = document.createElement("canvas");
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(bitmap, 0, 0);
+      const imagem = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const codigo = jsQR(imagem.data, imagem.width, imagem.height, { inversionAttempts: "attemptBoth" });
+
+      if (codigo && codigo.data) {
+        const semente = codigo.data.trim().toUpperCase();
+        if (SEMENTE_REGEX.test(semente)) {
+          inputSenha.value = semente;
+          entrar();
+          return;
+        }
+      }
+      erroLogin.textContent = "Não encontrei um QR Code de semente válido nessa imagem.";
+    } catch (e) {
+      erroLogin.textContent = "Não foi possível processar a imagem colada.";
+    }
+  }
+
+  window.addEventListener("paste", (e) => {
+    if (!telaLogin || telaLogin.classList.contains("hidden")) return;
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type && item.type.startsWith("image/")) {
+        e.preventDefault();
+        const blob = item.getAsFile();
+        if (blob) processarImagemQR(blob);
+        return;
+      }
+    }
+  });
 
   btnSair.addEventListener("click", () => {
     inputSenha.value = "";

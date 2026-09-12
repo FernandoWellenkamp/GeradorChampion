@@ -276,7 +276,10 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><path d="M14 14h3v3h-3zM14 20h3M20 14v3M20 20v.01"></path></svg>
       Ler QR Code da máquina
     </button>
-    <div class="hint">Ou pressione <b>Ctrl+V</b> pra colar uma imagem do QR Code (ex: recebida no WhatsApp).</div>
+    <button class="qr-btn" id="btn-colar-imagem" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a1 1 0 0 1 1 1v1H8V5a1 1 0 0 1 1-1z"></path><rect x="5" y="4" width="14" height="18" rx="2"></rect><path d="M9 12h6M9 16h6"></path></svg>
+      Colar imagem do QR Code
+    </button>
     <div class="error" id="erro-login"></div>
   </div>
 
@@ -584,7 +587,33 @@
   btnLerQr.addEventListener("click", abrirLeitorQR);
   btnQrCancelar.addEventListener("click", fecharLeitorQR);
 
-  // ---- Colar imagem do QR Code (Ctrl+V, ex: print recebido no WhatsApp) ----
+  // ---- Colar imagem do QR Code (ex: print recebido no WhatsApp) ----
+  const btnColarImagem = document.getElementById("btn-colar-imagem");
+
+  async function colarImagemDoClipboard() {
+    erroLogin.textContent = "";
+    if (!navigator.clipboard || !navigator.clipboard.read) {
+      erroLogin.textContent = "Seu navegador não permite colar por aqui — use Ctrl+V com o campo da semente em foco.";
+      return;
+    }
+    try {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        const tipo = item.types.find((t) => t.startsWith("image/"));
+        if (tipo) {
+          const blob = await item.getType(tipo);
+          await processarImagemQR(blob);
+          return;
+        }
+      }
+      erroLogin.textContent = "Não encontrei nenhuma imagem na área de transferência.";
+    } catch (e) {
+      erroLogin.textContent = "Não foi possível acessar a área de transferência (permissão negada).";
+    }
+  }
+
+  btnColarImagem.addEventListener("click", colarImagemDoClipboard);
+
   async function processarImagemQR(blob) {
     erroLogin.textContent = "";
     if (typeof jsQR !== "function") {

@@ -28,7 +28,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .frame-916 {
+    width: 100vw;
+    height: 100vh;
+    max-width: calc(100vh * 9 / 16);
+    max-height: calc(100vw * 16 / 9);
+    margin: auto;
+    box-sizing: border-box;
     padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   .card {
     width: 100%;
@@ -38,6 +51,7 @@
     border-radius: 16px;
     padding: 32px 28px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    flex: none;
   }
   .logo {
     width: fit-content;
@@ -262,6 +276,8 @@
 </head>
 <body>
 
+  <div class="frame-916">
+
   <div class="card" id="tela-login">
     <div class="logo">Champion II</div>
     <h1>Gerador de Licença</h1>
@@ -281,20 +297,6 @@
       Colar imagem do QR Code
     </button>
     <div class="error" id="erro-login"></div>
-  </div>
-
-  <!-- OVERLAY: LEITOR DE QR CODE -->
-  <div class="qr-overlay hidden" id="qr-overlay">
-    <div class="qr-panel">
-      <h1>Ler QR Code</h1>
-      <div class="subtitle">Aponte a câmera para o QR Code exibido no Bingo_63</div>
-      <div class="qr-video-wrap">
-        <video id="qr-video" autoplay playsinline muted></video>
-        <div class="qr-mira"></div>
-      </div>
-      <div class="qr-status" id="qr-status">Iniciando câmera…</div>
-      <button class="qr-cancelar" id="btn-qr-cancelar" type="button">Cancelar</button>
-    </div>
   </div>
 
   <!-- TELA 2: GERADOR -->
@@ -338,6 +340,22 @@
 
     <div class="hint">
       Digite este código de 17 dígitos na tela de registro do jogo (Semente) e confirme com "aceitar".
+    </div>
+  </div>
+
+  </div>
+
+  <!-- OVERLAY: LEITOR DE QR CODE -->
+  <div class="qr-overlay hidden" id="qr-overlay">
+    <div class="qr-panel">
+      <h1>Ler QR Code</h1>
+      <div class="subtitle">Aponte a câmera para o QR Code exibido no Bingo_63</div>
+      <div class="qr-video-wrap">
+        <video id="qr-video" autoplay playsinline muted></video>
+        <div class="qr-mira"></div>
+      </div>
+      <div class="qr-status" id="qr-status">Iniciando câmera…</div>
+      <button class="qr-cancelar" id="btn-qr-cancelar" type="button">Cancelar</button>
     </div>
   </div>
 
